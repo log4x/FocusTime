@@ -38,21 +38,21 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
   const currentStep = steps[step];
 
   return (
-    <div className={`h-screen flex flex-col p-8 transition-colors duration-500 ${currentStep.color}`}>
+    <div className={`h-[100dvh] flex flex-col p-8 pt-safe pb-safe transition-colors duration-500 overflow-hidden ${currentStep.color}`}>
       <div className="flex-1 flex flex-col justify-center items-center text-center">
-        <div className="text-8xl mb-8 animate-bounce">{currentStep.icon}</div>
-        <h1 className="text-3xl font-bold text-slate-800 mb-4">{currentStep.title}</h1>
-        <p className="text-lg text-slate-600 leading-relaxed max-w-xs">{currentStep.description}</p>
+        <div className="text-8xl mb-8 animate-bounce transition-transform">{currentStep.icon}</div>
+        <h1 className="text-2xl md:text-3xl font-black text-slate-800 mb-4 tracking-tight">{currentStep.title}</h1>
+        <p className="text-base md:text-lg text-slate-600 leading-relaxed max-w-[280px] font-medium">{currentStep.description}</p>
         
         {step === 3 && (
-          <div className="mt-6 bg-white/50 px-4 py-2 rounded-full border border-blue-100 flex items-center gap-2">
-            <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
-            <span className="text-[10px] font-bold text-blue-700 uppercase tracking-widest">100% Local Processing</span>
+          <div className="mt-6 bg-white/60 px-5 py-2 rounded-full border border-blue-100 flex items-center gap-2 backdrop-blur-sm shadow-sm">
+            <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+            <span className="text-[10px] font-black text-blue-700 uppercase tracking-widest">100% Local Processing</span>
           </div>
         )}
       </div>
 
-      <div className="pb-8 space-y-4">
+      <div className="shrink-0 space-y-4 pt-4">
         <div className="flex justify-center gap-2 mb-8">
           {steps.map((_, i) => (
             <div 
@@ -64,7 +64,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         
         <button 
           onClick={() => step < steps.length - 1 ? setStep(step + 1) : onComplete()}
-          className="w-full bg-indigo-600 text-white font-semibold py-4 rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 active:scale-95 transition-all"
+          className="w-full bg-indigo-600 text-white font-black py-5 rounded-[24px] shadow-xl shadow-indigo-100 active:scale-95 active:bg-indigo-700 transition-all text-sm uppercase tracking-widest"
         >
           {step === steps.length - 1 ? "Start Being Present" : "Next"}
         </button>
@@ -72,7 +72,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         {step < steps.length - 1 && (
           <button 
             onClick={onComplete}
-            className="w-full text-slate-400 font-medium py-2 hover:text-slate-600"
+            className="w-full text-slate-400 font-black text-xs uppercase tracking-widest py-2 active:text-slate-600 transition-colors"
           >
             Skip Intro
           </button>

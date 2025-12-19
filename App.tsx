@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { AppScreen, MonitoredApp, GlobalOverlayState, OverlayType } from './types';
+import { AppScreen, MonitoredApp, GlobalOverlayState } from './types';
 import { INITIAL_APPS } from './constants';
 import Onboarding from './components/Onboarding';
 import Dashboard from './components/Dashboard';
@@ -23,7 +23,6 @@ const App: React.FC = () => {
     return parseInt(localStorage.getItem('focus_usage_count') || '0', 10);
   });
 
-  // Global Overlay State simulating Background Service
   const [overlayState, setOverlayState] = useState<GlobalOverlayState>({
     type: 'NONE',
     app: null,
@@ -40,7 +39,6 @@ const App: React.FC = () => {
     localStorage.setItem('focus_apps', JSON.stringify(monitoredApps));
   }, [monitoredApps]);
 
-  // Timer logic for the background "service"
   useEffect(() => {
     let timer: number;
     if (overlayState.timeLeft > 0 && overlayState.type === 'NONE') {
@@ -97,38 +95,23 @@ const App: React.FC = () => {
       case AppScreen.ONBOARDING:
         return <Onboarding onComplete={handleCompleteOnboarding} />;
       case AppScreen.DASHBOARD:
-        return <Dashboard 
-          apps={monitoredApps} 
-          onNavigate={setCurrentScreen} 
-        />;
+        return <Dashboard apps={monitoredApps} onNavigate={setCurrentScreen} />;
       case AppScreen.SETTINGS:
-        return <Settings 
-          apps={monitoredApps} 
-          onToggle={toggleAppMonitoring} 
-          onBack={() => setCurrentScreen(AppScreen.DASHBOARD)} 
-        />;
+        return <Settings apps={monitoredApps} onToggle={toggleAppMonitoring} onBack={() => setCurrentScreen(AppScreen.DASHBOARD)} />;
       case AppScreen.SIMULATOR:
-        return <OverlaySimulator 
-          apps={monitoredApps.filter(a => a.isMonitored)} 
-          activeApp={overlayState.app}
-          timeLeft={overlayState.timeLeft}
-          onLaunch={triggerAppOverlay}
-          onExit={closeOverlay}
-          onBack={() => setCurrentScreen(AppScreen.DASHBOARD)} 
-        />;
+        return <OverlaySimulator apps={monitoredApps.filter(a => a.isMonitored)} activeApp={overlayState.app} timeLeft={overlayState.timeLeft} onLaunch={triggerAppOverlay} onExit={closeOverlay} onBack={() => setCurrentScreen(AppScreen.DASHBOARD)} />;
       case AppScreen.COACH:
-        return <AICoach 
-          apps={monitoredApps} 
-          onBack={() => setCurrentScreen(AppScreen.DASHBOARD)} 
-        />;
+        return <AICoach apps={monitoredApps} onBack={() => setCurrentScreen(AppScreen.DASHBOARD)} />;
       default:
         return <Dashboard apps={monitoredApps} onNavigate={setCurrentScreen} />;
     }
   };
 
   return (
-    <div className="min-h-screen max-w-md mx-auto bg-slate-50 shadow-xl overflow-hidden relative border-x border-slate-200">
-      {renderScreen()}
+    <div className="h-[100dvh] w-full max-w-md mx-auto bg-slate-50 shadow-2xl overflow-hidden relative border-x border-slate-200 flex flex-col">
+      <div className="flex-1 overflow-y-auto no-scrollbar">
+        {renderScreen()}
+      </div>
       
       {currentScreen !== AppScreen.ONBOARDING && (
         <SystemTrigger 
@@ -144,40 +127,25 @@ const App: React.FC = () => {
         usageCount={usageCount}
       />
 
-      {currentScreen !== AppScreen.ONBOARDING && currentScreen !== AppScreen.SIMULATOR && (
-        <nav className="fixed bottom-0 w-full max-w-md bg-white border-t border-slate-200 flex justify-around py-3 px-2 z-40">
-          <button onClick={() => setCurrentScreen(AppScreen.DASHBOARD)} className={`flex flex-col items-center gap-1 ${currentScreen === AppScreen.DASHBOARD ? 'text-indigo-600' : 'text-slate-400'}`}>
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-            <span className="text-[10px] font-medium uppercase tracking-wider">Home</span>
-          </button>
-          
-          <button onClick={() => setCurrentScreen(AppScreen.SIMULATOR)} className="flex flex-col items-center gap-1 text-slate-400 hover:text-indigo-600 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span className="text-[10px] font-medium uppercase tracking-wider">Simulator</span>
-          </button>
-
-          <button onClick={() => setCurrentScreen(AppScreen.COACH)} className={`flex flex-col items-center gap-1 ${currentScreen === AppScreen.COACH ? 'text-indigo-600' : 'text-slate-400'}`}>
-             <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-            </svg>
-            <span className="text-[10px] font-medium uppercase tracking-wider">Coach</span>
-          </button>
-
-          <button onClick={() => setCurrentScreen(AppScreen.SETTINGS)} className={`flex flex-col items-center gap-1 ${currentScreen === AppScreen.SETTINGS ? 'text-indigo-600' : 'text-slate-400'}`}>
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-            </svg>
-            <span className="text-[10px] font-medium uppercase tracking-wider">Config</span>
-          </button>
+      {currentScreen !== AppScreen.ONBOARDING && (
+        <nav className="shrink-0 w-full bg-white/95 backdrop-blur-md border-t border-slate-200 flex justify-around pt-3 pb-safe px-2 z-40">
+          <NavButton icon="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" label="Home" active={currentScreen === AppScreen.DASHBOARD} onClick={() => setCurrentScreen(AppScreen.DASHBOARD)} />
+          <NavButton icon="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z M21 12a9 9 0 11-18 0 9 9 0 0118 0z" label="Sim" active={currentScreen === AppScreen.SIMULATOR} onClick={() => setCurrentScreen(AppScreen.SIMULATOR)} />
+          <NavButton icon="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" label="Coach" active={currentScreen === AppScreen.COACH} onClick={() => setCurrentScreen(AppScreen.COACH)} />
+          <NavButton icon="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" label="Config" active={currentScreen === AppScreen.SETTINGS} onClick={() => setCurrentScreen(AppScreen.SETTINGS)} />
         </nav>
       )}
     </div>
   );
 };
+
+const NavButton: React.FC<{ icon: string, label: string, active: boolean, onClick: () => void }> = ({ icon, label, active, onClick }) => (
+  <button onClick={onClick} className={`flex flex-col items-center gap-1 min-w-[64px] min-h-[48px] justify-center transition-colors ${active ? 'text-indigo-600' : 'text-slate-400'}`}>
+    <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={icon} />
+    </svg>
+    <span className="text-[10px] font-bold uppercase tracking-wider">{label}</span>
+  </button>
+);
 
 export default App;
