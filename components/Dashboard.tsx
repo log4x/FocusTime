@@ -14,7 +14,7 @@ const Dashboard: React.FC<DashboardProps> = ({ apps, onNavigate }) => {
   const chartData = apps.filter(a => a.dailyUsageMinutes > 0).sort((a, b) => b.dailyUsageMinutes - a.dailyUsageMinutes);
 
   return (
-    <div className="pb-32 animate-in fade-in duration-500">
+    <div className="pb-8 animate-in fade-in duration-500">
       <header className="px-6 pt-10 pb-6 bg-white border-b border-slate-100 flex justify-between items-center sticky top-0 z-10">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Focus</h1>

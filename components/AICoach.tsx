@@ -45,7 +45,7 @@ const AICoach: React.FC<AICoachProps> = () => {
   }, []);
 
   return (
-    <div className="pb-24 min-h-full bg-slate-50 animate-in fade-in duration-500">
+    <div className="pb-8 min-h-full bg-slate-50 animate-in fade-in duration-500">
       <header className="p-6 bg-white border-b border-slate-100 flex items-center gap-4 sticky top-0 z-10">
         <h1 className="text-xl font-bold text-slate-800">Presence Guide</h1>
         <div className="ml-auto bg-emerald-100 text-emerald-600 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Local & Private</div>

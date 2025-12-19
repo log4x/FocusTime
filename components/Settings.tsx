@@ -10,7 +10,7 @@ interface SettingsProps {
 
 const Settings: React.FC<SettingsProps> = ({ apps, onToggle, onBack }) => {
   return (
-    <div className="pb-32 animate-in slide-in-from-right duration-300">
+    <div className="pb-8 animate-in slide-in-from-right duration-300">
       <header className="px-6 pt-10 pb-6 bg-white border-b border-slate-100 flex items-center gap-4 sticky top-0 z-10">
         <button onClick={onBack} className="p-3 -ml-2 rounded-2xl hover:bg-slate-50 active:scale-90 transition-all">
           <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
