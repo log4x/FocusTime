@@ -28,6 +28,22 @@ const App: React.FC = () => {
     timeLeft: 0
   });
 
+  // NATIVE BRIDGE: Listen for external app launches from the Accessibility Service
+  useEffect(() => {
+    const handleNativeAppLaunch = (event: any) => {
+      const packageName = event.detail?.packageName;
+      if (!packageName) return;
+
+      const launchedApp = monitoredApps.find(a => a.packageName === packageName && a.isMonitored);
+      if (launchedApp && overlayState.type === 'NONE') {
+        triggerAppOverlay(launchedApp);
+      }
+    };
+
+    window.addEventListener('appLaunched', handleNativeAppLaunch);
+    return () => window.removeEventListener('appLaunched', handleNativeAppLaunch);
+  }, [monitoredApps, overlayState.type]);
+
   useEffect(() => {
     if (hasCompletedOnboarding && currentScreen === AppScreen.ONBOARDING) {
       setCurrentScreen(AppScreen.DASHBOARD);
