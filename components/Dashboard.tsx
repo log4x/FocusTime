@@ -80,14 +80,6 @@ const Dashboard: React.FC<DashboardProps> = ({ apps, onNavigate }) => {
             ))}
           </div>
         </section>
-        
-        <div onClick={() => onNavigate(AppScreen.SIMULATOR)} className="bg-slate-900 p-6 rounded-[32px] text-white shadow-2xl relative overflow-hidden group active:scale-[0.97] transition-all">
-          <div className="absolute top-0 right-0 p-8 opacity-10 -rotate-12 transform group-hover:scale-110 transition-transform">
-             <svg xmlns="http://www.w3.org/2000/svg" className="w-24 h-24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
-          </div>
-          <h3 className="text-lg font-bold mb-1 flex items-center gap-2 relative z-10">System Simulation</h3>
-          <p className="text-slate-400 text-sm relative z-10">Test how the overlay works in the wild.</p>
-        </div>
       </main>
     </div>
   );
