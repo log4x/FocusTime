@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 
 interface OnboardingProps {
   onComplete: () => void;
+  isDarkMode: boolean;
 }
 
-const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
+const Onboarding: React.FC<OnboardingProps> = ({ onComplete, isDarkMode }) => {
   const [step, setStep] = useState(0);
 
   const steps = [
@@ -13,25 +14,29 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
       title: "Be Present",
       description: "Our goal is simple: to help you regain control over your digital life, one session at a time.",
       icon: "🧘‍♂️",
-      color: "bg-indigo-50"
+      color: isDarkMode ? "bg-slate-950" : "bg-indigo-50",
+      accent: isDarkMode ? "text-indigo-400" : "text-indigo-600"
     },
     {
       title: "Set Intentions",
       description: "When you open a distracting app, we'll ask how long you want to spend. This creates a moment of mindfulness.",
       icon: "⏱️",
-      color: "bg-emerald-50"
+      color: isDarkMode ? "bg-slate-950" : "bg-emerald-50",
+      accent: isDarkMode ? "text-emerald-400" : "text-emerald-600"
     },
     {
       title: "Gentle Nudges",
       description: "When time is up, we gently remind you to step back. No guilt, just clarity.",
       icon: "🕊️",
-      color: "bg-amber-50"
+      color: isDarkMode ? "bg-slate-950" : "bg-amber-50",
+      accent: isDarkMode ? "text-amber-400" : "text-amber-600"
     },
     {
       title: "Privacy is our DNA",
       description: "Every bit of your data stays exactly where it belongs: on your phone. No clouds, no trackers, just your focus.",
       icon: "🛡️",
-      color: "bg-blue-50"
+      color: isDarkMode ? "bg-slate-950" : "bg-blue-50",
+      accent: isDarkMode ? "text-blue-400" : "text-blue-600"
     }
   ];
 
@@ -41,15 +46,16 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
     <div className={`h-[100dvh] flex flex-col p-8 pt-safe pb-safe transition-colors duration-500 overflow-hidden ${currentStep.color}`}>
       <div className="flex-1 flex flex-col justify-center items-center text-center">
         <div className="text-8xl mb-8 animate-bounce transition-transform">{currentStep.icon}</div>
-        <h1 className="text-2xl md:text-3xl font-black text-slate-800 mb-4 tracking-tight">{currentStep.title}</h1>
-        <p className="text-base md:text-lg text-slate-600 leading-relaxed max-w-[280px] font-medium">{currentStep.description}</p>
+        <h1 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-slate-100 mb-4 tracking-tight">{currentStep.title}</h1>
+        <p className="text-base md:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-[280px] font-medium">{currentStep.description}</p>
         
-        {step === 3 && (
-          <div className="mt-6 bg-white/60 px-5 py-2 rounded-full border border-blue-100 flex items-center gap-2 backdrop-blur-sm shadow-sm">
+        {/* Reserve space for badge to prevent content jump */}
+        <div className={`mt-6 transition-all duration-300 ${step === 3 ? 'opacity-100' : 'opacity-0 translate-y-2'}`}>
+          <div className="bg-white/60 dark:bg-slate-900/60 px-5 py-2 rounded-full border border-blue-100 dark:border-blue-900 flex items-center gap-2 backdrop-blur-sm shadow-sm">
             <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-            <span className="text-[10px] font-black text-blue-700 uppercase tracking-widest">100% Local Processing</span>
+            <span className="text-[10px] font-black text-blue-700 dark:text-blue-400 uppercase tracking-widest">100% Local Processing</span>
           </div>
-        )}
+        </div>
       </div>
 
       <div className="shrink-0 space-y-4 pt-4">
@@ -57,26 +63,25 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
           {steps.map((_, i) => (
             <div 
               key={i} 
-              className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-indigo-600' : 'w-2 bg-slate-300'}`}
+              className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-indigo-600 dark:bg-indigo-400' : 'w-2 bg-slate-300 dark:bg-slate-700'}`}
             />
           ))}
         </div>
         
         <button 
           onClick={() => step < steps.length - 1 ? setStep(step + 1) : onComplete()}
-          className="w-full bg-indigo-600 text-white font-black py-5 rounded-[24px] shadow-xl shadow-indigo-100 active:scale-95 active:bg-indigo-700 transition-all text-sm uppercase tracking-widest"
+          className="w-full bg-indigo-600 dark:bg-indigo-500 text-white font-black py-5 rounded-[24px] shadow-xl shadow-indigo-100 dark:shadow-none active:scale-95 active:bg-indigo-700 dark:active:bg-indigo-600 transition-all text-sm uppercase tracking-widest min-h-[64px]"
         >
           {step === steps.length - 1 ? "Start Being Present" : "Next"}
         </button>
         
-        {step < steps.length - 1 && (
-          <button 
-            onClick={onComplete}
-            className="w-full text-slate-400 font-black text-xs uppercase tracking-widest py-2 active:text-slate-600 transition-colors"
-          >
-            Skip Intro
-          </button>
-        )}
+        {/* Use invisible instead of removing element to maintain footer height & button alignment */}
+        <button 
+          onClick={onComplete}
+          className={`w-full text-slate-400 dark:text-slate-600 font-black text-xs uppercase tracking-widest py-2 active:text-slate-600 dark:active:text-slate-400 transition-all ${step === steps.length - 1 ? 'invisible pointer-events-none' : 'visible'}`}
+        >
+          Skip Intro
+        </button>
       </div>
     </div>
   );
