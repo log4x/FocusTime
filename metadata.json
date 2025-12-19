@@ -1,9 +1,7 @@
 {
   "name": "Focus: Digital Wellness",
   "description": "A calm, non-judgmental companion to help you reclaim your time from addictive apps. Requires Accessibility and Overlay permissions for full functionality.",
-  "requestFramePermissions": [
-    "camera"
-  ],
+  "requestFramePermissions": [],
   "androidPermissions": [
     "android.permission.BIND_ACCESSIBILITY_SERVICE",
     "android.permission.SYSTEM_ALERT_WINDOW",
