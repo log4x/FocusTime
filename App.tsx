@@ -11,9 +11,6 @@ import SystemTrigger from './components/SystemTrigger';
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>(AppScreen.ONBOARDING);
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
-    return localStorage.getItem('focus_theme') === 'dark';
-  });
   const [monitoredApps, setMonitoredApps] = useState<MonitoredApp[]>(() => {
     const saved = localStorage.getItem('focus_apps');
     return saved ? JSON.parse(saved) : INITIAL_APPS;
@@ -40,10 +37,6 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('focus_apps', JSON.stringify(monitoredApps));
   }, [monitoredApps]);
-
-  useEffect(() => {
-    localStorage.setItem('focus_theme', isDarkMode ? 'dark' : 'light');
-  }, [isDarkMode]);
 
   useEffect(() => {
     let timer: number;
@@ -99,28 +92,20 @@ const App: React.FC = () => {
   const renderScreen = () => {
     switch (currentScreen) {
       case AppScreen.ONBOARDING:
-        return <Onboarding onComplete={handleCompleteOnboarding} isDarkMode={isDarkMode} />;
+        return <Onboarding onComplete={handleCompleteOnboarding} />;
       case AppScreen.DASHBOARD:
-        return <Dashboard apps={monitoredApps} onNavigate={setCurrentScreen} isDarkMode={isDarkMode} />;
+        return <Dashboard apps={monitoredApps} onNavigate={setCurrentScreen} />;
       case AppScreen.SETTINGS:
-        return (
-          <Settings 
-            apps={monitoredApps} 
-            onToggle={toggleAppMonitoring} 
-            onBack={() => setCurrentScreen(AppScreen.DASHBOARD)}
-            isDarkMode={isDarkMode}
-            onToggleTheme={() => setIsDarkMode(!isDarkMode)}
-          />
-        );
+        return <Settings apps={monitoredApps} onToggle={toggleAppMonitoring} onBack={() => setCurrentScreen(AppScreen.DASHBOARD)} />;
       case AppScreen.COACH:
-        return <AICoach onBack={() => setCurrentScreen(AppScreen.DASHBOARD)} isDarkMode={isDarkMode} />;
+        return <AICoach onBack={() => setCurrentScreen(AppScreen.DASHBOARD)} />;
       default:
-        return <Dashboard apps={monitoredApps} onNavigate={setCurrentScreen} isDarkMode={isDarkMode} />;
+        return <Dashboard apps={monitoredApps} onNavigate={setCurrentScreen} />;
     }
   };
 
   return (
-    <div className={`${isDarkMode ? 'dark' : ''} h-[100dvh] w-full max-w-md mx-auto bg-slate-50 dark:bg-slate-950 shadow-2xl overflow-hidden relative border-x border-slate-200 dark:border-slate-800 flex flex-col transition-colors duration-300`}>
+    <div className="h-[100dvh] w-full max-w-md mx-auto bg-slate-50 shadow-2xl overflow-hidden relative border-x border-slate-200 flex flex-col">
       <div className="flex-1 overflow-y-auto no-scrollbar">
         {renderScreen()}
       </div>
@@ -129,7 +114,6 @@ const App: React.FC = () => {
         <SystemTrigger 
           apps={monitoredApps.filter(a => a.isMonitored)} 
           onTrigger={triggerAppOverlay} 
-          isDarkMode={isDarkMode}
         />
       )}
 
@@ -138,11 +122,10 @@ const App: React.FC = () => {
         onStartSession={startSession} 
         onClose={closeOverlay} 
         usageCount={usageCount}
-        isDarkMode={isDarkMode}
       />
 
       {currentScreen !== AppScreen.ONBOARDING && (
-        <nav className="shrink-0 w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 flex justify-around pt-3 pb-safe px-2 z-40">
+        <nav className="shrink-0 w-full bg-white/95 backdrop-blur-md border-t border-slate-200 flex justify-around pt-3 pb-safe px-2 z-40">
           <NavButton icon="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" label="Home" active={currentScreen === AppScreen.DASHBOARD} onClick={() => setCurrentScreen(AppScreen.DASHBOARD)} />
           <NavButton icon="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" label="Guide" active={currentScreen === AppScreen.COACH} onClick={() => setCurrentScreen(AppScreen.COACH)} />
           <NavButton icon="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" label="Config" active={currentScreen === AppScreen.SETTINGS} onClick={() => setCurrentScreen(AppScreen.SETTINGS)} />
@@ -153,7 +136,7 @@ const App: React.FC = () => {
 };
 
 const NavButton: React.FC<{ icon: string, label: string, active: boolean, onClick: () => void }> = ({ icon, label, active, onClick }) => (
-  <button onClick={onClick} className={`flex flex-col items-center gap-1 min-w-[64px] min-h-[48px] justify-center transition-colors ${active ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'}`}>
+  <button onClick={onClick} className={`flex flex-col items-center gap-1 min-w-[64px] min-h-[48px] justify-center transition-colors ${active ? 'text-indigo-600' : 'text-slate-400'}`}>
     <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={icon} />
     </svg>
